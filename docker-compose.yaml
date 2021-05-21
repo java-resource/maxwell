@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  maxwell:
+    build: .
+    image: zendesk/maxwell:1.33.0
+    container_name: maxwell
+    command: [ "-c","sed -i 's/\r//' `grep maxwell -rl /app/bin/`; while true; do echo hello; sleep 2; done" ]
+    entrypoint: [ "/bin/bash" ]
+    volumes:
+      - D:/env/m3:/root/.m2/
+      - D:/env/m4:/usr/share/maven/ref/repository
+    networks:
+      - flink
+
+networks:
+  flink:
+    driver: "bridge"
+    name: "flink-network"
+
+# docker restart maxwell
+# docker attach maxwell
+# docker exec -it  maxwell /bin/bash
+# docker rmi zendesk/maxwell:1.33.0
+# docker rmi $(docker images -q -f dangling=true)
+# /bin/bash -c bin/maxwell-docker
+# sed -i "s/\r//" filename
+# sed -i "s/^M//" filename
+# sed -i 's/\r//' `grep maxwell -rl /app/bin/`
+
