@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 services:
   mysql:
     image: mysql:5.7.34
@@ -11,14 +11,14 @@ services:
       - 3306:3306
     volumes:
       - D:\\env\\mysql/data:/var/lib/mysql
-      - D:\\env\\mysql/log:/var/log/mysql
-      - D:\\env\\mysql/conf:/etc/mysql
+#      - D:\\env\\mysql/log:/var/log/mysql
+#      - D:\\env\\mysql/conf:/etc/mysql
     configs:
-      - source: my.cnf
+      - source: mysql_config
         target: /etc/mysql/conf.d/mysql-test.conf
         uid: '103'
         gid: '103'
-        mode: 0440
+        mode: 0777
     networks:
       - maxwell
   zookeeper:
@@ -66,11 +66,10 @@ networks:
     driver: "bridge"
     name: "maxwell-network"
 configs:
-  my_config:
+  mysql_config:
     file: ./my.cnf
-  my_other_config:
-    external: true
-
+#  my_other_config:
+#    external: true
 
 # docker restart maxwell
 # docker attach maxwell
