@@ -1,21 +1,76 @@
 version: "3.8"
 services:
+  mysql:
+    image: mysql:5.7.34
+    container_name: mysql
+    environment:
+      - MYSQL_USER=lessin
+      - MYSQL_PASSWORD=123456
+      - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - 3306:3306
+    volumes:
+      - D:\\env\\mysql/data:/var/lib/mysql
+      - D:\\env\\mysql/log:/var/log/mysql
+      - D:\\env\\mysql/conf:/etc/mysql
+    configs:
+      - source: my.cnf
+        target: /etc/mysql/conf.d/mysql-test.conf
+        uid: '103'
+        gid: '103'
+        mode: 0440
+    networks:
+      - maxwell
+  zookeeper:
+    image: zookeeper:3.7.0
+    container_name: zookeeper
+    networks:
+      - maxwell
+  kafka:
+    image: wurstmeister/kafka:2.12-2.3.1
+    container_name: kafka
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181/kafka
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+    networks:
+      - maxwell
+  kafkamanager:
+    image: kafkamanager/kafka-manager:3.0.0.4
+    container_name: kafkamanager
+    networks:
+      - maxwell
   maxwell:
     build: .
     image: zendesk/maxwell:1.33.0
     container_name: maxwell
-    command: [ "-c","sed -i 's/\r//' `grep maxwell -rl /app/bin/`; while true; do echo hello; sleep 2; done" ]
+    command: [ "-c", "sed -i 's/\r//' `grep maxwell -rl /app/bin/`; bin/maxwell-docker" ]
+    #command: [ "-c","sed -i 's/\r//' `grep maxwell -rl /app/bin/`; while true; do echo hello; sleep 2; done" ]
     entrypoint: [ "/bin/bash" ]
+    environment:
+      - MYSQL_USER=lessin
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=123456
+      - MYSQL_HOST=mysql
+      - MAXWELL_PRODUCER=kafka
+      - KAFKA_BROKERS=kafka:9201
+    #      - MAXWELL_OPTIONS
     volumes:
       - D:/env/m3:/root/.m2/
       - D:/env/m4:/usr/share/maven/ref/repository
     networks:
-      - flink
+      - maxwell
 
 networks:
-  flink:
+  maxwell:
     driver: "bridge"
-    name: "flink-network"
+    name: "maxwell-network"
+configs:
+  my_config:
+    file: ./my.cnf
+  my_other_config:
+    external: true
+
 
 # docker restart maxwell
 # docker attach maxwell
