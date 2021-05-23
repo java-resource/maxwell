@@ -13,9 +13,19 @@ services:
       - D:\\env\\mysql/data:/var/lib/mysql
       - D:\\env\\mysql/log:/var/log/mysql
       - D:\\env\\mysql/conf:/etc/mysql
-    restart: always
-    entrypoint: "chmod -R 644 /etc/mysql; docker-entrypoint.sh"
-    command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci'
+#    restart: always
+#    entrypoint: "chmod -R 644 /etc/mysql; docker-entrypoint.sh "
+    command: >
+      bash -c "
+      chmod -R 644 /etc/mysql
+      &&
+      /entrypoint.sh mysqld
+      --defaults-file=/etc/mysql/my.cnf
+      --explicit_defaults_for_timestamp
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      "
     networks:
       - maxwell
   adminer:
@@ -89,5 +99,5 @@ networks:
 # sed -i "s/\r//" filename
 # sed -i "s/^M//" filename
 # sed -i 's/\r//' `grep maxwell -rl /app/bin/`
-
+# chmod 0444 my.cnf
 # sudo usermod -d /var/lib/mysql/ mysql
