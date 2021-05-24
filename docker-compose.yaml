@@ -7,6 +7,7 @@ services:
       - MYSQL_USER=lessin
       - MYSQL_PASSWORD=123456
       - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=test
     ports:
       - 3306:3306
     volumes:
@@ -46,22 +47,22 @@ services:
       - maxwell
   kafka:
     image: wurstmeister/kafka:2.12-2.3.1
-    container_name: kafka
     depends_on:
       - zookeeper
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_LISTENERS: PLAINTEXT://:9092
       KAFKA_CREATE_TOPICS: maxwell,gateway
-    ports:
-      - 9092:9092
-      - 9094:9094
     networks:
       - maxwell
   kafkamanager:
     image: kafkamanager/kafka-manager:3.0.0.4
     container_name: kafkamanager
+    environment:
+      ZK_HOSTS: zookeeper:2181
+    ports:
+      - 9000:9000
     depends_on:
       - kafka
     networks:
@@ -96,7 +97,6 @@ services:
       - MYSQL_PORT=3306
       - MAXWELL_PRODUCER=kafka
       - KAFKA_BROKERS=kafka:9092
-      - KAFKA_BROKERS=kafka:9201
     networks:
       - maxwell
 
@@ -119,9 +119,12 @@ networks:
 # chmod 0444 my.cnf
 # sudo usermod -d /var/lib/mysql/ mysql
 # docker volume prune
+# docker-compose scale kafka=3
+# docker-compose up --scale kafka=3 -d
 
 # /bin/sh -c mkdir -p /usr/share/maven /usr/share/maven/ref
 
 # curl -fSL -o /tmp/apache-maven.tar.gz https://apache.osuosl.org/maven/maven-3/3.8.1/binaries/apache-maven-3.8.1-bin.tar.gz
 
 # tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1
+
