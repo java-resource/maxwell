@@ -1,4 +1,4 @@
-FROM c
+FROM maven:3.8.1-jdk-11
 ENV MAXWELL_VERSION=1.33.0 KAFKA_VERSION=1.0.0
 
 VOLUME ["/root/.m2"]
