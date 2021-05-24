@@ -1,7 +1,7 @@
-FROM maven:3.8.1-jdk-11
+FROM c
 ENV MAXWELL_VERSION=1.33.0 KAFKA_VERSION=1.0.0
 
-VOLUME ["D:/env/m3:/root/.m2/","D:/env/m4:/usr/share/maven/ref/repository"]
+VOLUME ["/root/.m2"]
 
 RUN apt-get update \
     && apt-get -y upgrade \

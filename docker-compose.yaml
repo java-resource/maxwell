@@ -93,11 +93,8 @@ services:
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - MAXWELL_PRODUCER=kafka
+      - KAFKA_BROKERS=kafka:9092
       - KAFKA_BROKERS=kafka:9201
-    #      - MAXWELL_OPTIONS
-    volumes:
-      - D:/env/m3:/root/.m2/
-      - D:/env/m4:/usr/share/maven/ref/repository
     networks:
       - maxwell
 
@@ -119,3 +116,10 @@ networks:
 # chmod -R 644 /etc/mysql
 # chmod 0444 my.cnf
 # sudo usermod -d /var/lib/mysql/ mysql
+# docker volume prune
+
+# /bin/sh -c mkdir -p /usr/share/maven /usr/share/maven/ref
+
+# curl -fSL -o /tmp/apache-maven.tar.gz https://apache.osuosl.org/maven/maven-3/3.8.1/binaries/apache-maven-3.8.1-bin.tar.gz
+
+# tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1
