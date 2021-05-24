@@ -37,6 +37,8 @@ services:
       - mysql
     ports:
       - 8080:8080
+    networks:
+      - maxwell
   zookeeper:
     image: zookeeper:3.7.0
     container_name: zookeeper
@@ -101,7 +103,7 @@ services:
 networks:
   maxwell:
     driver: "bridge"
-    name: "maxwell-network"
+    name: "maxwell_network"
 
 # docker restart maxwell
 # docker attach maxwell

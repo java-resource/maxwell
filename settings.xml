@@ -20,7 +20,7 @@
             <id>centralMirror</id>
             <mirrorOf>central</mirrorOf>
             <name>Mirror of Centrol</name>
-            <url>http://nexus:8181/repository/maven-public/</url>
+            <url>http://192.168.102.44:8181/repository/maven-public/</url>
         </mirror>
     </mirrors>
     <profiles>

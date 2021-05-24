@@ -9,7 +9,7 @@ RUN apt-get update \
 
 COPY . /workspace
 
-RUN mv /workspace/settings.xml /usr/share/maven/
+RUN mv -f /workspace/settings.xml /usr/share/maven/conf/
 
 RUN cp /workspace/pom.xml /tmp && cd /tmp && mvn dependency:resolve
 
