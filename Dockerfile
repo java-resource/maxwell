@@ -7,11 +7,11 @@ RUN apt-get update \
     && apt-get -y upgrade \
     && apt-get install -y make
 
-# prime so we can have a cached image of the maven deps
-#COPY pom.xml /tmp
-#RUN cd /tmp && mvn dependency:resolve
-
 COPY . /workspace
+
+RUN mv /workspace/settings.xml /usr/share/maven/
+
+RUN cp /workspace/pom.xml /tmp && cd /tmp && mvn dependency:resolve
 
 RUN cd /workspace && KAFKA_VERSION=$KAFKA_VERSION make package MAXWELL_VERSION=$MAXWELL_VERSION
 
@@ -19,7 +19,7 @@ RUN mkdir /app && cp -r /workspace/target/maxwell-$MAXWELL_VERSION/maxwell-$MAXW
 
 RUN apt-get clean
 
-#RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /workspace/ /root/.m2/
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /workspace/ /root/.m2/
 
 RUN echo "$MAXWELL_VERSION" > /REVISION
 

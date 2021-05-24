@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings
+    xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <localRepository>/usr/share/maven/ref/repository</localRepository>
+    <servers>
+        <server>
+            <id>snapshots</id>
+            <username>admin</username>
+            <password>admin</password>
+        </server>
+        <server>
+            <id>releases</id>
+            <username>admin</username>
+            <password>admin</password>
+        </server>
+    </servers>
+    <mirrors>
+        <mirror>
+            <id>centralMirror</id>
+            <mirrorOf>central</mirrorOf>
+            <name>Mirror of Centrol</name>
+            <url>http://nexus:8181/repository/maven-public/</url>
+        </mirror>
+    </mirrors>
+    <profiles>
+        <profile>
+            <id>profile-default</id>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>http://central</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>profile-default</activeProfile>
+    </activeProfiles>
+</settings>
