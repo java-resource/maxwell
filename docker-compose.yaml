@@ -12,11 +12,16 @@ services:
     volumes:
       - D:/env/mysql/data:/var/lib/mysql
       - D:/env/mysql/log:/var/log/mysql
-      - D:/env/mysql/conf:/etc/mysql
+#      - D:/env/mysql/conf:/etc/mysql
     command: bash -c
       "
-      chmod -R 644 /etc/mysql
-      && docker-entrypoint.sh
+      echo server_id=1 >> /etc/mysql/mysql.conf.d/mysqld.cnf
+      &&
+      echo log-bin=master >> /etc/mysql/mysql.conf.d/mysqld.cnf
+      &&
+      echo binlog_format=row >> /etc/mysql/mysql.conf.d/mysqld.cnf
+      &&
+      docker-entrypoint.sh
       --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
@@ -108,5 +113,6 @@ networks:
 # sed -i "s/\r//" filename
 # sed -i "s/^M//" filename
 # sed -i 's/\r//' `grep maxwell -rl /app/bin/`
-
+# apt-get update && apt-get install vim -y
+# chmod -R 644 /etc/mysql
 # sudo usermod -d /var/lib/mysql/ mysql
