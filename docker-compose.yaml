@@ -10,12 +10,17 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - D:\\env\\mysql/data:/var/lib/mysql
-      - D:\\env\\mysql/log:/var/log/mysql
-      - D:\\env\\mysql/conf:/etc/mysql
-    restart: always
-    entrypoint: "chmod -R 644 /etc/mysql; docker-entrypoint.sh"
-    command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci'
+      - D:/env/mysql/data:/var/lib/mysql
+      - D:/env/mysql/log:/var/log/mysql
+      - D:/env/mysql/conf:/etc/mysql
+    command: bash -c
+      "
+      chmod -R 644 /etc/mysql
+      && docker-entrypoint.sh
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      "
     networks:
       - maxwell
   adminer:
@@ -36,9 +41,13 @@ services:
     depends_on:
       - zookeeper
     environment:
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181/kafka
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/kafka
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_CREATE_TOPICS: maxwell,gateway
+    ports:
+      - 9092:9092
+      - 9094:9094
     networks:
       - maxwell
   kafkamanager:
@@ -46,6 +55,15 @@ services:
     container_name: kafkamanager
     depends_on:
       - kafka
+    networks:
+      - maxwell
+  nexus:
+    image: sonatype/nexus3:3.30.1
+    container_name: nexus
+    ports:
+      - 8181:8081
+    volumes:
+      - D:/env/nexus3/data/:/nexus-data
     networks:
       - maxwell
   maxwell:
@@ -60,6 +78,7 @@ services:
     depends_on:
       - mysql
       - kafka
+      - nexus
     environment:
       - MYSQL_USER=lessin
       - MYSQL_USERNAME=root
